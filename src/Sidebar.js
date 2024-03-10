@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { db } from "./firestoreConfigs"
 
 function Sidebar() {
+    
     const [rooms, setRooms] = useState()
 
     const getRooms = async() => {
