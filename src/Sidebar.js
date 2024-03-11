@@ -5,31 +5,48 @@ import ChatIcon from '@mui/icons-material/Chat';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {SearchOutlined} from "@mui/icons-material"
 import SidebarChat from './SidebarChat';
-import { collection, getDocs } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { collection, getDocs, onSnapshot, unsubscribe } from "firebase/firestore";
+import { useEffect, useState, useRef } from "react";
 import { db } from "./firestoreConfigs"
+import { useStateValue } from "./DataProvider";
 
 function Sidebar() {
     
-    const [rooms, setRooms] = useState()
+    const [rooms, setRooms] = useState([])
+    const [{ user }, dispatch] = useStateValue()
 
-    const getRooms = async() => {
-        const querySnapshot = await getDocs(collection(db, "rooms"));
-        querySnapshot.forEach((doc) => {
-            // doc.data() is never undefined for query doc snapshots
-            console.log(doc.id, " => ", doc.data());
-        });
-        // setRooms(rooms)
-    }
+    const unsubscribeRef = useRef(null);
+
+    // const getRooms = async() => {
+    //     const querySnapshot = await getDocs(collection(db, "rooms"));
+    //     console.log(querySnapshot)
+    //     setRooms(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    //     // setRooms(rooms)
+    // }
+
+    // useEffect(() => {
+    //     getRooms()
+    // }, [])
 
     useEffect(() => {
-        getRooms()
-    }, [])
+        // Create an unsubscribe function reference
+        unsubscribeRef.current = onSnapshot(collection(db, "rooms"), (querySnapshot) => {
+          const newRooms = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          setRooms(newRooms);
+        });
+      
+        // Cleanup function to unsubscribe on unmount
+        return () => {
+          if (unsubscribeRef.current) {
+            unsubscribeRef.current();
+          }
+        };
+      }, []);
 
   return (
     <div className='sidebar'>
       <div className="sidebar__header">
-        <Avatar />
+        <Avatar src={user?.photoURL}/>
         <div className="sidebar__headerRight">
             <IconButton>
                 <DonutLargeIcon />
@@ -50,6 +67,10 @@ function Sidebar() {
       </div>
       <div className="sidebar__chats">
         <SidebarChat addNewChat />
+            {rooms && rooms.map(room => (
+            <SidebarChat key={room.id} id={room.id} 
+            name={room.id ? room.name : 'Loading...'} />
+            ))}
       </div>
     </div>
   )
