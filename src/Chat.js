@@ -36,31 +36,31 @@ function Chat() {
     useEffect(() => {
     
         if (roomId) {
-          const roomRef = doc(collection(db, 'rooms'), roomId); // Combined reference creation
+          const roomRef = doc(collection(db, 'rooms'), roomId); 
     
           // Listen for room document changes
           const unsubscribeRoom = onSnapshot(roomRef, (snapshot) => {
             if (snapshot.exists) {
-              setRoomName(snapshot.data().name); // Update room name
+              setRoomName(snapshot.data().name); 
             } else {
-              console.log('Room document not found'); // Handle non-existent room
+              console.log('Room document not found'); 
             }
           }, (error) => {
-            console.error('Error fetching room data:', error); // Error handling
+            console.error('Error fetching room data:', error); 
           });
     
           // Listen for messages collection changes
-          const messagesQuery = query(collection(db, "rooms", roomId, "messages"), orderBy("timestamp", "asc")); // Optimized query definition
+          const messagesQuery = query(collection(db, "rooms", roomId, "messages"), orderBy("timestamp", "asc")); 
           const unsubscribeMessages = onSnapshot(messagesQuery, (snapshot) => {
             setMessages(snapshot.docs.map((doc) => doc.data()));
           }, (error) => {
-            console.error('Error fetching messages:', error); // Error handling
+            console.error('Error fetching messages:', error); 
           });
     
           // Cleanup function to unsubscribe on unmount
           return () => {
             unsubscribeRoom();
-            unsubscribeMessages(); // Unsubscribe from both listeners
+            unsubscribeMessages(); 
           };
         }
       }, [roomId]); 
@@ -85,7 +85,7 @@ function Chat() {
     const sendMessage = async (e) => {
         e.preventDefault();
     
-        if (!input) return; // Handle empty message input (optional)
+        if (!input) return; // Handling empty message input 
 
         try {
           await addDoc(collection(db, "rooms", roomId, "messages"), {
@@ -96,7 +96,6 @@ function Chat() {
           setInput(''); // Clear the input field after successful message sending
         } catch (error) {
           console.error('Error sending message:', error);
-          // Handle errors appropriately, e.g., display an error message to the user
         }
       };
 
