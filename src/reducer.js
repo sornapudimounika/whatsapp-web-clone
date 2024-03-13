@@ -22,8 +22,6 @@
 // export default reducer
 
 
-// import { combineReducers, configureStore } from "@reduxjs/toolkit"
-
 export const initialState = {
     user: null, // Store user data here
 };
@@ -45,7 +43,3 @@ export const reducer = (state = initialState.user, action) => {
     }
 };
   
-// const rootReducer = combineReducers({user: userReducer});
-  
-// const store = configureStore(rootReducer);
-// export default store
