@@ -24,7 +24,7 @@ function SidebarChat({ id, name, addNewChat }) {
       const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
         setMessages(snapshot.docs.map((doc) => doc.data()));
       }, (error) => {
-        console.error('Error fetching messages:', error); // Error handling
+        console.error('Error fetching messages:', error); 
       });
 
       // Cleanup function to unsubscribe on unmount
@@ -48,18 +48,10 @@ function SidebarChat({ id, name, addNewChat }) {
     const roomName = prompt("Please enter name for chat");
 
     if (roomName) {
-        // Access the rooms collection using collection(db, "rooms")
         const roomsCollectionRef = collection(db, "rooms");
-
-        // try {
-        // Use addDoc to add a new document
         const docRef = await addDoc(roomsCollectionRef, {
             name: roomName,
         });
-        // console.log("Room added with ID:", docRef.id);
-        // } catch (error) {
-        // console.error("Error adding chat:", error);
-        // }
     }
 }
 
