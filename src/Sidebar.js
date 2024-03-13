@@ -24,18 +24,12 @@ function Sidebar() {
     //     // setRooms(rooms)
     // }
 
-    // useEffect(() => {
-    //     getRooms()
-    // }, [])
-
     useEffect(() => {
-        // Create an unsubscribe function reference
         unsubscribeRef.current = onSnapshot(collection(db, "rooms"), (querySnapshot) => {
           const newRooms = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
           setRooms(newRooms);
         });
       
-        // Cleanup function to unsubscribe on unmount
         return () => {
           if (unsubscribeRef.current) {
             unsubscribeRef.current();
